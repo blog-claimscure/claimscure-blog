@@ -1,0 +1,6 @@
+{
+  "name": "ClaimsCure Publishing CMS & Blog",
+  "description": "Production-ready healthcare revenue cycle management publishing CMS and public blog for ClaimsCure LLC",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
