@@ -1491,7 +1491,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, 'localhost', () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`ClaimsCure Publishing CMS server running on http://localhost:${PORT}`);
   });
 }
