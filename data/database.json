@@ -600,7 +600,15 @@
       "_id": "6a7b43b585768a8f59534869"
     }
   ],
-  "subscribers": [],
+  "subscribers": [
+    {
+      "id": "sub-1786470339588",
+      "email": "test-deploy@example.com",
+      "subscribedAt": "2026-08-11T17:45:39.589Z",
+      "source": "test",
+      "status": "active"
+    }
+  ],
   "emailCampaigns": [],
   "leads": [],
   "settings": {
@@ -1079,6 +1087,12 @@
   ],
   "redirects": [],
   "analyticsEvents": [
+    {
+      "id": "evt-1786470339594",
+      "type": "subscriber_conversion",
+      "path": "/",
+      "timestamp": "2026-08-11T17:45:39.594Z"
+    },
     {
       "id": "evt-1786469008579",
       "type": "subscriber_conversion",

@@ -3,7 +3,7 @@ import { MongoClient, Db } from 'mongodb';
 let mongoClient: MongoClient | null = null;
 let mongoDb: Db | null = null;
 
-const DEFAULT_MONGO_URI =process.env.MONGODB_URI;
+const DEFAULT_MONGO_URI = 'mongodb+srv://claimscure_db_user:J199ensKcVfsXuLL@cluster0.dq33ymm.mongodb.net/claimscure_cms?retryWrites=true&w=majority&appName=Cluster0';
 
 export async function getMongoDb(): Promise<Db | null> {
   const uri = process.env.MONGODB_URI || process.env.MONGO_URI || DEFAULT_MONGO_URI;

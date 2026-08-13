@@ -32,7 +32,15 @@ import {
   sendAuditRequestConfirmationEmail,
   sendEmail,
   isEmailConfigured,
+  getEmailConfigSummary,
 } from './src/server/email';
+import { runStartupDiagnostics, getHealthStatus } from './src/server/startup';
+
+function resultTransportLabel(transport?: string) {
+  if (transport === 'brevo-api') return 'Brevo HTTP API';
+  if (transport === 'smtp') return 'SMTP';
+  return 'email service';
+}
 import {
   Article,
   ArticleRevision,
@@ -56,6 +64,11 @@ async function startServer() {
   app.use(express.json({ limit: '20mb' }));
   app.use(express.urlencoded({ extended: true, limit: '20mb' }));
   app.use(cookieParser());
+
+  // Health check — use this on Render to verify API + services
+  app.get('/api/health', async (_req, res) => {
+    res.json(getHealthStatus());
+  });
 
   // Serve uploaded media
   const uploadsDir = path.join(process.cwd(), 'data', 'uploads');
@@ -916,10 +929,11 @@ async function startServer() {
           subs.map((s) => (s.id === existing.id ? { ...s, status: 'active', unsubscribedAt: undefined } : s))
         );
         if (isEmailConfigured()) {
+          console.log(`[Email] Sending reactivation email to ${existing.email}...`);
           const emailResult = await sendReactivationEmail(existing.email, settings);
-          if (!emailResult.success) {
-            console.error('[Email] Failed to send reactivation email:', emailResult.error);
-          }
+          if (!emailResult.success) console.error('[Email] Reactivation failed:', emailResult.error);
+        } else {
+          console.error('[Email] Reactivation skipped — BREVO_API_KEY not configured');
         }
         res.json({ success: true, message: 'Welcome back! Your newsletter subscription is re-activated.' });
         return;
@@ -939,14 +953,6 @@ async function startServer() {
     db.update('subscribers', (subs) => [newSub, ...subs]);
     autoSyncMongoCollection('subscribers', db.get('subscribers'));
 
-    if (isEmailConfigured()) {
-      const emailResult = await sendWelcomeEmail(newSub.email, settings);
-      if (!emailResult.success) {
-        console.error('[Email] Failed to send welcome email:', emailResult.error);
-      }
-    }
-
-    // Record conversion analytics
     db.update('analyticsEvents', (evts) => [
       {
         id: `evt-${Date.now()}`,
@@ -957,7 +963,29 @@ async function startServer() {
       ...evts,
     ]);
 
-    res.json({ success: true, message: 'Thank you for subscribing to ClaimsCure Insights!' });
+    // Send welcome email BEFORE responding so it actually completes on Render
+    let emailSent = false;
+    if (!isEmailConfigured()) {
+      console.error('[Email] CRITICAL: Cannot send welcome email — BREVO_API_KEY is not set in server environment!');
+      console.error('[Email] Add BREVO_API_KEY to Render → Environment → Environment Variables, then redeploy.');
+    } else {
+      console.log(`[Email] Sending welcome email to ${newSub.email}...`);
+      const emailResult = await sendWelcomeEmail(newSub.email, settings);
+      emailSent = emailResult.success;
+      if (emailResult.success) {
+        console.log(`[Email] Welcome email delivered to ${newSub.email} via ${emailResult.transport}`);
+      } else {
+        console.error(`[Email] Welcome email FAILED for ${newSub.email}:`, emailResult.error);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: emailSent
+        ? 'Thank you for subscribing! Check your inbox for a welcome email.'
+        : 'Thank you for subscribing to ClaimsCure Insights!',
+      emailSent,
+    });
   });
 
   app.post('/api/subscribers/unsubscribe', (req, res) => {
@@ -1122,16 +1150,22 @@ async function startServer() {
 
     logActivity('NEW_LEAD_SUBMITTED', `Claims audit lead submitted by ${name} (${clinicName})`);
 
+    let emailSent = false;
     if (isEmailConfigured()) {
+      console.log(`[Email] Sending audit confirmation to ${lead.workEmail}...`);
       const emailResult = await sendAuditRequestConfirmationEmail(lead, settings);
-      if (!emailResult.success) {
-        console.error('[Email] Failed to send audit confirmation to requester:', emailResult.error);
-      }
+      emailSent = emailResult.success;
+      if (!emailResult.success) console.error('[Email] Audit confirmation failed:', emailResult.error);
+    } else {
+      console.error('[Email] Audit email skipped — BREVO_API_KEY not configured');
     }
 
     res.json({
       success: true,
-      message: 'Thank you! Your Free Claims Audit request has been submitted. A confirmation email has been sent to your inbox.',
+      message: emailSent
+        ? 'Thank you! Your Free Claims Audit request has been submitted. A confirmation email has been sent to your inbox.'
+        : 'Thank you! Your Free Claims Audit request has been submitted to ClaimsCure senior billing specialists.',
+      emailSent,
     });
   });
 
@@ -1304,17 +1338,14 @@ async function startServer() {
   });
 
   app.get('/api/system/email-status', requireAdminAuth, (req, res) => {
-    res.json({
-      configured: isEmailConfigured(),
-      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-      fromEmail: process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || '',
-      fromName: process.env.SMTP_FROM_NAME || 'ClaimsCure Insights',
-    });
+    res.json(getEmailConfigSummary());
   });
 
   app.post('/api/system/test-email', requireAdminAuth, async (req, res) => {
     if (!isEmailConfigured()) {
-      res.status(503).json({ error: 'Email service is not configured. Set SMTP credentials in .env.' });
+      res.status(503).json({
+        error: 'Email not configured. Set BREVO_API_KEY (recommended for Render) or SMTP credentials.',
+      });
       return;
     }
 
@@ -1323,17 +1354,21 @@ async function startServer() {
     const result = await sendEmail(
       adminEmail,
       'ClaimsCure CMS — Email Test Successful',
-      `<p style="color:#334155;font-size:15px;line-height:1.7;">Your Brevo SMTP integration is working correctly. Subscribers will receive welcome emails and newsletter campaigns from <strong>${settings.siteName || 'ClaimsCure Insights'}</strong>.</p>`,
+      `<p style="color:#334155;font-size:15px;line-height:1.7;">Your email integration is working correctly. Subscribers will receive welcome emails from <strong>${settings.siteName || 'ClaimsCure Insights'}</strong>.</p>`,
       settings
     );
 
     if (!result.success) {
-      res.status(500).json({ error: result.error || 'Failed to send test email.' });
+      res.status(500).json({ error: result.error || 'Failed to send test email.', transport: result.transport });
       return;
     }
 
-    logActivity('EMAIL_TEST', `Test email sent to ${adminEmail}`, adminEmail);
-    res.json({ success: true, message: `Test email sent to ${adminEmail}. Check your inbox.` });
+    logActivity('EMAIL_TEST', `Test email sent to ${adminEmail} via ${result.transport}`, adminEmail);
+    res.json({
+      success: true,
+      transport: result.transport,
+      message: `Test email sent to ${adminEmail} via ${resultTransportLabel(result.transport)}. Check your inbox.`,
+    });
   });
 
   app.post('/api/system/mongodb-sync', requireAdminAuth, async (req, res) => {
@@ -1498,8 +1533,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, HOST, () => {
-    console.log(`ClaimsCure Publishing CMS server running on http://${HOST}:${PORT}`);
+  app.listen(PORT, HOST, async () => {
+    await runStartupDiagnostics(HOST, PORT);
   });
 }
 

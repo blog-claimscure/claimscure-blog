@@ -4,13 +4,18 @@ import type { Article, Lead, SiteSettings } from '../types';
 
 let transporter: Transporter | null = null;
 
+function getBrevoApiKey(): string | undefined {
+  const key = process.env.BREVO_API_KEY?.trim();
+  return key || undefined;
+}
+
 function getTransporter(): Transporter | null {
   if (transporter) return transporter;
 
   const host = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
   const port = Number(process.env.SMTP_PORT || 587);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS?.trim();
 
   if (!user || !pass) {
     console.warn('[Email] SMTP credentials not configured. Emails will not be sent.');
@@ -22,6 +27,9 @@ function getTransporter(): Transporter | null {
     port,
     secure: port === 465,
     auth: { user, pass },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 
   return transporter;
@@ -119,25 +127,104 @@ function transactionalEmailWrapper(title: string, bodyHtml: string, settings?: S
 </html>`;
 }
 
-export async function sendEmail(
-  to: string,
-  subject: string,
-  html: string,
-  settings?: SiteSettings
-): Promise<{ success: boolean; error?: string }> {
-  const transport = getTransporter();
-  if (!transport) {
-    return { success: false, error: 'SMTP not configured' };
-  }
-
-  const sender = getSender(settings);
-  const finalHtml = html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(to));
-  const plainText = html
+function htmlToPlainText(html: string) {
+  return html
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')
     .replace(/<[^>]*>/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+async function sendViaBrevoApi(
+  to: string,
+  subject: string,
+  html: string,
+  settings?: SiteSettings
+): Promise<{ success: boolean; error?: string; messageId?: string }> {
+  const apiKey = getBrevoApiKey();
+  if (!apiKey) {
+    return { success: false, error: 'BREVO_API_KEY not configured' };
+  }
+
+  const sender = getSender(settings);
+  const finalHtml = html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(to));
+
+  console.log(`[Email] Calling Brevo API → to=${to} from=${sender.email} subject="${subject.slice(0, 50)}"`);
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { name: sender.name, email: sender.email },
+          to: [{ email: to }],
+          replyTo: { email: sender.email, name: sender.name },
+          subject,
+          htmlContent: finalHtml,
+          textContent: htmlToPlainText(finalHtml),
+        }),
+        signal: AbortSignal.timeout(20000),
+      });
+
+      const body = await res.text();
+      if (!res.ok) {
+        console.error(`[Email] Brevo API error (${res.status}) attempt ${attempt}:`, body.slice(0, 300));
+        if (attempt === 2) {
+          return { success: false, error: `Brevo API ${res.status}: ${body.slice(0, 200)}` };
+        }
+        continue;
+      }
+
+      let messageId: string | undefined;
+      try {
+        messageId = JSON.parse(body).messageId;
+      } catch {
+        // ignore parse errors
+      }
+
+      return { success: true, messageId };
+    } catch (err: any) {
+      console.error(`[Email] Brevo API request failed attempt ${attempt}:`, err.message);
+      if (attempt === 2) {
+        return { success: false, error: err.message };
+      }
+    }
+  }
+
+  return { success: false, error: 'Brevo API failed after retries' };
+}
+
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  settings?: SiteSettings
+): Promise<{ success: boolean; error?: string; transport?: string }> {
+  // Brevo HTTP API — works on Render (SMTP port 587 is often blocked on cloud hosts)
+  const brevoKey = getBrevoApiKey();
+  if (brevoKey) {
+    const apiResult = await sendViaBrevoApi(to, subject, html, settings);
+    if (apiResult.success) {
+      console.log(`[Email] Sent via Brevo API to ${to}${apiResult.messageId ? ` (${apiResult.messageId})` : ''}`);
+      return { success: true, transport: 'brevo-api' };
+    }
+    console.warn('[Email] Brevo API failed, trying SMTP fallback:', apiResult.error);
+  }
+
+  const transport = getTransporter();
+  if (!transport) {
+    return { success: false, error: 'Email not configured — set BREVO_API_KEY or SMTP credentials' };
+  }
+
+  const sender = getSender(settings);
+  const finalHtml = html.replace(/\{\{EMAIL\}\}/g, encodeURIComponent(to));
+  const plainText = htmlToPlainText(finalHtml);
 
   try {
     await transport.sendMail({
@@ -148,10 +235,11 @@ export async function sendEmail(
       html: finalHtml,
       text: plainText,
     });
-    return { success: true };
+    console.log(`[Email] Sent via SMTP to ${to}`);
+    return { success: true, transport: 'smtp' };
   } catch (err: any) {
-    console.error(`[Email] Failed to send to ${to}:`, err.message);
-    return { success: false, error: err.message };
+    console.error(`[Email] SMTP failed for ${to}:`, err.message);
+    return { success: false, error: err.message, transport: 'smtp' };
   }
 }
 
@@ -290,5 +378,61 @@ export async function sendAuditRequestConfirmationEmail(lead: Lead, settings?: S
 }
 
 export function isEmailConfigured(): boolean {
-  return !!(process.env.SMTP_USER && process.env.SMTP_PASS);
+  return !!(getBrevoApiKey() || (process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim()));
+}
+
+export function getEmailConfigSummary() {
+  const hasBrevoApi = !!getBrevoApiKey();
+  const hasSmtp = !!(process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim());
+
+  return {
+    configured: isEmailConfigured(),
+    transport: hasBrevoApi ? 'brevo-api' : hasSmtp ? 'smtp' : 'none',
+    brevoApiConfigured: hasBrevoApi,
+    smtpConfigured: hasSmtp,
+    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+    port: Number(process.env.SMTP_PORT || 587),
+    user: process.env.SMTP_USER || '',
+    fromName: process.env.SMTP_FROM_NAME || 'ClaimsCure Insights',
+    fromEmail:
+      process.env.SMTP_FROM_EMAIL ||
+      process.env.SMTP_USER ||
+      'ar.claimscure@gmail.com',
+  };
+}
+
+export async function verifyEmailConnection(): Promise<{ ok: boolean; error?: string; transport?: string }> {
+  const brevoKey = getBrevoApiKey();
+  if (brevoKey) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/account', {
+        headers: {
+          'api-key': brevoKey,
+          accept: 'application/json',
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (res.ok) {
+        return { ok: true, transport: 'brevo-api' };
+      }
+
+      const body = await res.text();
+      return { ok: false, error: `Brevo API ${res.status}: ${body.slice(0, 150)}`, transport: 'brevo-api' };
+    } catch (err: any) {
+      return { ok: false, error: err.message, transport: 'brevo-api' };
+    }
+  }
+
+  const transport = getTransporter();
+  if (!transport) {
+    return { ok: false, error: 'Email not configured — set BREVO_API_KEY or SMTP credentials' };
+  }
+
+  try {
+    await transport.verify();
+    return { ok: true, transport: 'smtp' };
+  } catch (err: any) {
+    return { ok: false, error: err.message, transport: 'smtp' };
+  }
 }

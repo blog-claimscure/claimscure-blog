@@ -64,18 +64,31 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers['Authorization'] = `Bearer ${adminToken}`;
   }
 
-  const response = await fetch(endpoint, {
-    ...options,
-    headers,
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
 
-  const data = await response.json().catch(() => ({}));
+  try {
+    const response = await fetch(endpoint, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
 
-  if (!response.ok) {
-    throw new Error(data.error || `HTTP ${response.status}: Request failed.`);
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || `HTTP ${response.status}: Request failed.`);
+    }
+
+    return data as T;
+  } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      throw new Error('Request timed out. The server may be waking up — please try again in a moment.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return data as T;
 }
 
 export const api = {
