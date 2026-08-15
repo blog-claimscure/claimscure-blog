@@ -1,0 +1,22 @@
+# https://www.robotstxt.org/robotstxt.html
+# ClaimsCure Medical Billing & RCM Publication Robots.txt
+
+User-agent: *
+Allow: /
+Allow: /article/
+Allow: /category/
+Allow: /author/
+Allow: /tag/
+Allow: /rss.xml
+Allow: /sitemap.xml
+
+# Restrict sensitive administrative endpoints
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/admin
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+# Host and Sitemap location
+Host: https://blog.claimscure.com
+Sitemap: https://blog.claimscure.com/sitemap.xml
