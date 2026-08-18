@@ -399,15 +399,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <ArrowRight className="h-3.5 w-3.5 text-[#1E88E5]" />
                 </button>
               </li>
-              <li className="pt-1">
-                <button
-                  onClick={() => (onOpenAdmin ? onOpenAdmin() : handleNav('/admin'))}
-                  className="inline-flex items-center gap-1.5 hover:text-white text-[#1E88E5] font-bold text-xs transition-colors cursor-pointer text-left"
-                >
-                  <KeyRound className="h-3.5 w-3.5 text-[#1E88E5]" />
-                  <span>Admin Portal CMS</span>
-                </button>
-              </li>
+             
             </ul>
           </div>
         </div>
