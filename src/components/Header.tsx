@@ -206,14 +206,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          <button
-            onClick={handleAdminClick}
-            className="p-2.5 rounded-xl text-slate-500 hover:text-[#1A1A2E] hover:bg-slate-100 transition-all cursor-pointer"
-            aria-label="Super Admin Portal"
-            title="Super Admin CMS Portal"
-          >
-            <Lock className="w-4 h-4 text-[#0B5FA5]" />
-          </button>
+         
         </div>
 
         {/* Mobile Action Controls */}
