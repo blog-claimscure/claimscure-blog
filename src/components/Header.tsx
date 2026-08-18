@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
     { label: 'Insights', url: '/category/revenue-cycle-management' },
     { label: 'Compliance Guides', url: '/category/cms-updates' },
     { label: 'Case Studies', url: '/category/case-studies' },
-    { label: 'About Us', url: 'https://www.claimscure.com/about' , isExternal: true},
+    { label: 'About Us', url: '/about' },
     { label: 'Contact', url: 'https://www.claimscure.com/contact', isExternal: true },
   ];
 

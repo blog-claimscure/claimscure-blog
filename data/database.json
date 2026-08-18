@@ -10,130 +10,112 @@
       "name": "Medical Billing",
       "slug": "medical-billing",
       "description": "Best practices, reimbursement strategies, and workflow enhancements for healthcare billing.",
-      "order": 1,
-      "_id": "6a7b43b485768a8f59534852"
+      "order": 1
     },
     {
       "id": "cat-2",
       "name": "Revenue Cycle Management",
       "slug": "revenue-cycle-management",
       "description": "Comprehensive guides on optimizing end-to-end RCM from patient access to collections.",
-      "order": 2,
-      "_id": "6a7b43b485768a8f59534853"
+      "order": 2
     },
     {
       "id": "cat-3",
       "name": "Compliance",
       "slug": "compliance",
       "description": "Healthcare regulatory standards, HIPAA guidelines, and audit protection strategies.",
-      "order": 3,
-      "_id": "6a7b43b485768a8f59534854"
+      "order": 3
     },
     {
       "id": "cat-4",
       "name": "CMS Updates",
       "slug": "cms-updates",
       "description": "Critical CMS policy shifts, outpatient guidelines, fee schedules, and Medicare rules.",
-      "order": 4,
-      "_id": "6a7b43b485768a8f59534855"
+      "order": 4
     },
     {
       "id": "cat-5",
       "name": "Medical Coding",
       "slug": "medical-coding",
       "description": "CPT, ICD-10, HCPCS updates, specificity rules, and modifier application insights.",
-      "order": 5,
-      "_id": "6a7b43b485768a8f59534856"
+      "order": 5
     },
     {
       "id": "cat-6",
       "name": "Credentialing",
       "slug": "credentialing",
       "description": "Payer enrollment efficiency, CAQH management, and provider credentialing workflows.",
-      "order": 6,
-      "_id": "6a7b43b485768a8f59534857"
+      "order": 6
     },
     {
       "id": "cat-7",
       "name": "Denials & AR",
       "slug": "denials-and-ar",
       "description": "Actionable techniques to reduce claim rejections, overturn denials, and clean up aged AR.",
-      "order": 7,
-      "_id": "6a7b43b485768a8f59534858"
+      "order": 7
     },
     {
       "id": "cat-8",
       "name": "Case Studies",
       "slug": "case-studies",
       "description": "Real-world revenue restoration stories and quantifiable practice turnaround metrics.",
-      "order": 8,
-      "_id": "6a7b43b485768a8f59534859"
+      "order": 8
     },
     {
       "id": "cat-9",
       "name": "Healthcare News",
       "slug": "healthcare-news",
       "description": "Timely developments in U.S. healthcare policy, payer contracts, and medical economics.",
-      "order": 9,
-      "_id": "6a7b43b485768a8f5953485a"
+      "order": 9
     },
     {
       "id": "cat-10",
       "name": "Practice Management",
       "slug": "practice-management",
       "description": "Operational leadership, patient billing engagement, and technology integration.",
-      "order": 10,
-      "_id": "6a7b43b485768a8f5953485b"
+      "order": 10
     }
   ],
   "tags": [
     {
       "id": "tag-1",
       "name": "CMS Guidelines",
-      "slug": "cms-guidelines",
-      "_id": "6a7b43b485768a8f5953485c"
+      "slug": "cms-guidelines"
     },
     {
       "id": "tag-2",
       "name": "Outpatient Billing",
-      "slug": "outpatient-billing",
-      "_id": "6a7b43b485768a8f5953485d"
+      "slug": "outpatient-billing"
     },
     {
       "id": "tag-3",
       "name": "Denial Prevention",
-      "slug": "denial-prevention",
-      "_id": "6a7b43b485768a8f5953485e"
+      "slug": "denial-prevention"
     },
     {
       "id": "tag-4",
       "name": "AR Aging",
-      "slug": "ar-aging",
-      "_id": "6a7b43b485768a8f5953485f"
+      "slug": "ar-aging"
     },
     {
       "id": "tag-5",
       "name": "CPT Codes",
-      "slug": "cpt-codes",
-      "_id": "6a7b43b485768a8f59534860"
+      "slug": "cpt-codes"
     },
     {
       "id": "tag-6",
       "name": "Prior Authorization",
-      "slug": "prior-authorization",
-      "_id": "6a7b43b485768a8f59534861"
+      "slug": "prior-authorization"
     },
     {
       "id": "tag-7",
       "name": "Medicare Part B",
-      "slug": "medicare-part-b",
-      "_id": "6a7b43b485768a8f59534862"
+      "slug": "medicare-part-b"
     },
     {
       "id": "tag-8",
       "name": "Payer Audits",
-      "slug": "payer-audits",
-      "_id": "6a7b43b485768a8f59534863"
+      "slug": "payer-audits"
     }
   ],
   "authors": [
@@ -145,8 +127,7 @@
       "bio": "The ClaimsCure Editorial Board comprises certified professional coders (CPC), revenue cycle directors, and medical billing auditors dedicated to empowering U.S. practices with actionable reimbursement intelligence.",
       "photo": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&auto=format&fit=crop&q=80",
       "credentials": "CPC, CPMA, RHIA",
-      "website": "https://www.claimscure.com",
-      "_id": "6a7b43b585768a8f59534864"
+      "website": "https://www.claimscure.com"
     },
     {
       "id": "auth-2",
@@ -156,8 +137,7 @@
       "bio": "Sarah Jenkins brings over 14 years of hands-on leadership in outpatient billing, denial reduction, and commercial payer negotiation across multi-specialty medical practices.",
       "photo": "https://images.unsplash.com/photo-1594824813566-78a9c8f25c79?w=400&auto=format&fit=crop&q=80",
       "credentials": "CPC, CEMC",
-      "linkedin": "https://linkedin.com/company/claimscure",
-      "_id": "6a7b43b585768a8f59534865"
+      "linkedin": "https://linkedin.com/company/claimscure"
     },
     {
       "id": "auth-3",
@@ -167,8 +147,7 @@
       "bio": "David Vance specializes in Medicare regulatory compliance, HIPAA privacy governance, and hospital-physician billing integration.",
       "photo": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&auto=format&fit=crop&q=80",
       "credentials": "RHIA, CHC",
-      "linkedin": "https://linkedin.com/company/claimscure",
-      "_id": "6a7b43b585768a8f59534866"
+      "linkedin": "https://linkedin.com/company/claimscure"
     }
   ],
   "articles": [
@@ -197,8 +176,7 @@
       "ogDescription": "hsosudoiuos",
       "ogImage": "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1200&auto=format&fit=crop&q=80",
       "views": 27,
-      "shares": 0,
-      "_id": "6a7b30d208872cbe7e34d4e4"
+      "shares": 0
     },
     {
       "id": "art-101",
@@ -225,8 +203,7 @@
       "seoDescription": "Complete 2026 guide to CMS outpatient fee schedules, modifier rules, and medical billing compliance strategies for healthcare practices.",
       "focusKeyword": "CMS outpatient billing 2026",
       "views": 1442,
-      "shares": 49,
-      "_id": "6a78e0eb1408951a312ffa7e"
+      "shares": 49
     },
     {
       "id": "art-102",
@@ -253,8 +230,7 @@
       "seoDescription": "Master denial management for medical practices: resolve CO-45, CO-16, and PR-2 codes with proven appeal templates.",
       "focusKeyword": "CO-45 CO-16 medical billing denials",
       "views": 1636,
-      "shares": 34,
-      "_id": "6a78e0eb1408951a312ffa7f"
+      "shares": 34
     },
     {
       "id": "art-103",
@@ -281,8 +257,7 @@
       "seoDescription": "Master 99214 and 99215 E/M coding guidelines, medical decision making documentation, and audit prevention tactics for physicians.",
       "focusKeyword": "99214 99215 EM coding guidelines 2026",
       "views": 1743,
-      "shares": 52,
-      "_id": "6a78e0eb1408951a312ffa80"
+      "shares": 52
     },
     {
       "id": "art-104",
@@ -307,8 +282,7 @@
       "seoDescription": "Master medical coding accuracy to prevent under-coding loss and payer rejections.",
       "focusKeyword": "medical coding accuracy",
       "views": 651,
-      "shares": 19,
-      "_id": "6a78e0eb1408951a312ffa81"
+      "shares": 19
     },
     {
       "id": "art-105",
@@ -332,8 +306,7 @@
       "seoDescription": "Avoid credentialing delays that paralyze medical practice cash flow with proactive enrollment strategies.",
       "focusKeyword": "provider credentialing delays",
       "views": 530,
-      "shares": 14,
-      "_id": "6a78e0eb1408951a312ffa82"
+      "shares": 14
     },
     {
       "id": "art-106",
@@ -359,8 +332,7 @@
       "seoDescription": "Discover essential strategies for flawless outpatient medical billing, charge capture, and clean claim submission.",
       "focusKeyword": "outpatient medical billing workflow",
       "views": 905,
-      "shares": 28,
-      "_id": "6a78e0eb1408951a312ffa83"
+      "shares": 28
     },
     {
       "id": "art-107",
@@ -385,8 +357,7 @@
       "seoDescription": "Master modern Revenue Cycle Management KPIs, clean claim strategies, and financial performance metrics.",
       "focusKeyword": "RCM frameworks 2026",
       "views": 743,
-      "shares": 22,
-      "_id": "6a78e0eb1408951a312ffa84"
+      "shares": 22
     },
     {
       "id": "art-108",
@@ -411,8 +382,7 @@
       "seoDescription": "Safeguard your practice against payer clawbacks with proactive HIPAA compliance, BAA verification, and clinical documentation integrity.",
       "focusKeyword": "healthcare compliance audit protection",
       "views": 617,
-      "shares": 18,
-      "_id": "6a78e0eb1408951a312ffa85"
+      "shares": 18
     },
     {
       "id": "art-109",
@@ -437,8 +407,7 @@
       "seoDescription": "Master commercial payer contract negotiations, prior authorization trends, and fee schedule optimization for healthcare practices.",
       "focusKeyword": "healthcare payer contract trends 2026",
       "views": 480,
-      "shares": 12,
-      "_id": "6a78e0eb1408951a312ffa86"
+      "shares": 12
     },
     {
       "id": "art-110",
@@ -463,8 +432,7 @@
       "seoDescription": "Boost practice cash flow with transparent patient cost estimates, text-to-pay portals, and point-of-service collection protocols.",
       "focusKeyword": "patient collections practice management",
       "views": 520,
-      "shares": 15,
-      "_id": "6a78e0eb1408951a312ffa87"
+      "shares": 15
     },
     {
       "id": "art-111",
@@ -490,8 +458,7 @@
       "seoDescription": "Complete guide to billing Remote Patient Monitoring (RPM) codes 99453, 99454, 99457, 16-day transmission rules, and telehealth modifiers.",
       "focusKeyword": "RPM remote patient monitoring billing codes",
       "views": 813,
-      "shares": 26,
-      "_id": "6a78e0eb1408951a312ffa88"
+      "shares": 26
     },
     {
       "id": "art-112",
@@ -517,8 +484,7 @@
       "seoDescription": "Master Modifier 25 and Modifier 59 compliance rules, avoid bundling denials, and defend against payer audit clawbacks.",
       "focusKeyword": "modifier 25 modifier 59 compliance",
       "views": 940,
-      "shares": 31,
-      "_id": "6a78e0eb1408951a312ffa89"
+      "shares": 31
     }
   ],
   "revisions": [
@@ -530,8 +496,7 @@
       "excerpt": "hsosudoiuos",
       "savedAt": "2026-08-11T14:25:21.992Z",
       "savedBy": "admin@claimscure.com",
-      "versionNote": "Initial Creation",
-      "_id": "6a7b43b485768a8f5953484f"
+      "versionNote": "Initial Creation"
     },
     {
       "id": "rev-1786306796952",
@@ -541,8 +506,7 @@
       "excerpt": "UPDATED test excerpt for CRUD verification.",
       "savedAt": "2026-08-09T20:19:56.952Z",
       "savedBy": "admin@claimscure.com",
-      "versionNote": "Updated by admin@claimscure.com",
-      "_id": "6a7b43b485768a8f59534850"
+      "versionNote": "Updated by admin@claimscure.com"
     },
     {
       "id": "rev-1786306776414",
@@ -552,8 +516,7 @@
       "excerpt": "Test excerpt for CRUD article.",
       "savedAt": "2026-08-09T20:19:36.414Z",
       "savedBy": "admin@claimscure.com",
-      "versionNote": "Initial Creation",
-      "_id": "6a7b43b485768a8f59534851"
+      "versionNote": "Initial Creation"
     }
   ],
   "media": [
@@ -572,8 +535,7 @@
       "width": 2508,
       "height": 400,
       "isCloudinary": true,
-      "createdAt": "2026-08-11T15:36:59.485Z",
-      "_id": "6a7b43b585768a8f59534867"
+      "createdAt": "2026-08-11T15:36:59.485Z"
     },
     {
       "id": "med-1",
@@ -584,8 +546,7 @@
       "mimeType": "image/jpeg",
       "fileSize": 245000,
       "dimensions": "1200x800",
-      "createdAt": "2026-08-01T09:00:00.000Z",
-      "_id": "6a7b43b585768a8f59534868"
+      "createdAt": "2026-08-01T09:00:00.000Z"
     },
     {
       "id": "med-2",
@@ -596,19 +557,10 @@
       "mimeType": "image/jpeg",
       "fileSize": 310000,
       "dimensions": "1200x800",
-      "createdAt": "2026-07-25T11:30:00.000Z",
-      "_id": "6a7b43b585768a8f59534869"
+      "createdAt": "2026-07-25T11:30:00.000Z"
     }
   ],
-  "subscribers": [
-    {
-      "id": "sub-1786470339588",
-      "email": "test-deploy@example.com",
-      "subscribedAt": "2026-08-11T17:45:39.589Z",
-      "source": "test",
-      "status": "active"
-    }
-  ],
+  "subscribers": [],
   "emailCampaigns": [],
   "leads": [],
   "settings": {
@@ -757,8 +709,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T15:44:45.875Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953486a"
+      "ip": "::1"
     },
     {
       "id": "log-1786462619488-1olr",
@@ -766,8 +717,7 @@
       "details": "Uploaded image to Cloudinary: announcement.png (Public ID: claimscure_cms/cucmtyekqlxr4cn18iw4)",
       "timestamp": "2026-08-11T15:36:59.488Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953486b"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786462574568-t7lu",
@@ -775,8 +725,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T15:36:14.568Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953486c"
+      "ip": "::1"
     },
     {
       "id": "log-1786462365136-t22l",
@@ -784,8 +733,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T15:32:45.136Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953486d"
+      "ip": "::1"
     },
     {
       "id": "log-1786461903533-c6k6",
@@ -793,8 +741,7 @@
       "details": "Claims audit lead submitted by mani (Mani123)",
       "timestamp": "2026-08-11T15:25:03.533Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953486e"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786461818232-higm",
@@ -802,8 +749,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T15:23:38.232Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953486f"
+      "ip": "::1"
     },
     {
       "id": "log-1786461519436-9geh",
@@ -811,8 +757,7 @@
       "details": "Claims audit lead submitted by Mani (Baltimore)",
       "timestamp": "2026-08-11T15:18:39.436Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534870"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786461352852-7n7j",
@@ -820,8 +765,7 @@
       "details": "Sent custom newsletter \"hi\" to 1/1 subscribers",
       "timestamp": "2026-08-11T15:15:52.852Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534871"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786461326278-nvst",
@@ -829,8 +773,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T15:15:26.278Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f59534872"
+      "ip": "::1"
     },
     {
       "id": "log-1786459705144-4tdz",
@@ -838,8 +781,7 @@
       "details": "Test email sent to admin@claimscure.com",
       "timestamp": "2026-08-11T14:48:25.144Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534873"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786459698094-e4ab",
@@ -847,8 +789,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T14:48:18.094Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f59534874"
+      "ip": "::1"
     },
     {
       "id": "log-1786459259195-d7sr",
@@ -856,8 +797,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T14:40:59.195Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f59534875"
+      "ip": "::1"
     },
     {
       "id": "log-1786459217638-3d3r",
@@ -865,8 +805,7 @@
       "details": "Claims audit lead submitted by MAni (Baltimore)",
       "timestamp": "2026-08-11T14:40:17.639Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534876"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786459031676-a22j",
@@ -874,8 +813,7 @@
       "details": "Claims audit lead submitted by Test User (Test Clinic PA)",
       "timestamp": "2026-08-11T14:37:11.676Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534877"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786458329170-uw84",
@@ -883,8 +821,7 @@
       "details": "Dispatched new email newsletter for \"Testing backend\" to 1/1 subscribers.",
       "timestamp": "2026-08-11T14:25:29.170Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534878"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786458321995-fke0",
@@ -892,8 +829,7 @@
       "details": "Created article: \"Testing backend\" (published)",
       "timestamp": "2026-08-11T14:25:21.995Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534879"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786458254891-c7ox",
@@ -901,8 +837,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T14:24:14.891Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953487a"
+      "ip": "::1"
     },
     {
       "id": "log-1786457975022-pa33",
@@ -910,8 +845,7 @@
       "details": "Test email sent to admin@claimscure.com",
       "timestamp": "2026-08-11T14:19:35.023Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953487b"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786457966549-dvma",
@@ -919,8 +853,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T14:19:26.549Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953487c"
+      "ip": "::1"
     },
     {
       "id": "log-1786457718718-by2w",
@@ -928,8 +861,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-11T14:15:18.718Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953487d"
+      "ip": "::1"
     },
     {
       "id": "log-1786457593276-f8lq",
@@ -937,8 +869,7 @@
       "details": "Claims audit lead submitted by mani (sdlkadla)",
       "timestamp": "2026-08-11T14:13:13.276Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953487e"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786308975790-qaiu",
@@ -946,8 +877,7 @@
       "details": "Invalid password entered for admin@claimscure.com",
       "timestamp": "2026-08-09T20:56:15.790Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "::1",
-      "_id": "6a7b43b685768a8f5953487f"
+      "ip": "::1"
     },
     {
       "id": "log-1786306901595-m0fw",
@@ -955,8 +885,7 @@
       "details": "Deleted category ID: cat-1786306776375",
       "timestamp": "2026-08-09T20:21:41.595Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534880"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306901475-8dkq",
@@ -964,8 +893,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:21:41.475Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534881"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306894917-fl51",
@@ -973,8 +901,7 @@
       "details": "Deleted article ID: art-1786306776389",
       "timestamp": "2026-08-09T20:21:34.917Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534882"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306894880-gapb",
@@ -982,8 +909,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:21:34.880Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534883"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306849247-e9ha",
@@ -991,8 +917,7 @@
       "details": "Deleted category ID: cat-1786306776375",
       "timestamp": "2026-08-09T20:20:49.247Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534884"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306849232-2toy",
@@ -1000,8 +925,7 @@
       "details": "Deleted article ID: art-1786306776389",
       "timestamp": "2026-08-09T20:20:49.232Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534885"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306849215-3tey",
@@ -1009,8 +933,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:20:49.215Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534886"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306796990-g72x",
@@ -1018,8 +941,7 @@
       "details": "Claims audit lead submitted by Test Clinic Owner (Test Medical Clinic PA)",
       "timestamp": "2026-08-09T20:19:56.990Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534887"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306796954-fm11",
@@ -1027,8 +949,7 @@
       "details": "Updated article: \"Test Article CRUD Operations (UPDATED)\" (published)",
       "timestamp": "2026-08-09T20:19:56.954Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534888"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306796932-pizf",
@@ -1036,8 +957,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:19:56.932Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f59534889"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306776417-v1cg",
@@ -1045,8 +965,7 @@
       "details": "Created article: \"Test Article CRUD Operations\" (published)",
       "timestamp": "2026-08-09T20:19:36.417Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953488a"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306776377-q2f5",
@@ -1054,8 +973,7 @@
       "details": "Created category: Test Category CRUD",
       "timestamp": "2026-08-09T20:19:36.377Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953488b"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306776361-itzs",
@@ -1063,8 +981,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:19:36.361Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953488c"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1786306743136-91xp",
@@ -1072,8 +989,7 @@
       "details": "Super Admin logged in successfully",
       "timestamp": "2026-08-09T20:19:03.136Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953488d"
+      "ip": "127.0.0.1"
     },
     {
       "id": "log-1",
@@ -1081,8 +997,7 @@
       "details": "ClaimsCure Publishing CMS database initialized with default administrative account and initial seed content.",
       "timestamp": "2026-08-09T20:18:26.834Z",
       "adminEmail": "admin@claimscure.com",
-      "ip": "127.0.0.1",
-      "_id": "6a7b43b685768a8f5953488e"
+      "ip": "127.0.0.1"
     }
   ],
   "redirects": [],

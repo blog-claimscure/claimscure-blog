@@ -312,10 +312,22 @@ export const api = {
     request<{
       primaryDatabase: string;
       mongoStatus: { isConnected: boolean; dbName?: string; uriConfigured: boolean };
-      collections: Record<string, number>;
+      inSync: boolean;
+      mismatches: string[];
+      localCounts: Record<string, number>;
+      mongoCounts: Record<string, number>;
+      syncableCollections: string[];
     }>('/api/system/database-status'),
   syncMongoDB: () =>
-    request<{ success: boolean; message: string }>('/api/system/mongodb-sync', { method: 'POST' }),
+    request<{ success: boolean; message: string; details?: Record<string, { ok: boolean; count: number }> }>(
+      '/api/system/mongodb-sync',
+      { method: 'POST' }
+    ),
+  hydrateMongoDB: () =>
+    request<{ success: boolean; hydrated: boolean; collections: Record<string, unknown>; message: string }>(
+      '/api/system/mongodb-hydrate',
+      { method: 'POST' }
+    ),
 
   // Google Integrations
   importGoogleDoc: (docContent: string) =>

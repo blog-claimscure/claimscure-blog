@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { db } from './db';
-import { checkMongoStatus } from './mongodb';
+import { checkMongoStatus, getMongoCollectionCounts, verifyMongoSync } from './mongodb';
 import { getCloudinaryConfig } from './cloudinary';
 import { isEmailConfigured, verifyEmailConnection, getEmailConfigSummary } from './email';
 
@@ -64,7 +64,7 @@ export async function runStartupDiagnostics(host: string, port: number): Promise
 
   // MongoDB
   console.log('\n[MONGODB ATLAS]');
-  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  const mongoUri = process.env.MONGODB_URI?.trim() || process.env.MONGO_URI?.trim();
   console.log(`  URI configured ..... ${mongoUri ? status(true) : status(false)}`);
   try {
     const mongo = await Promise.race([
@@ -73,6 +73,41 @@ export async function runStartupDiagnostics(host: string, port: number): Promise
     ]);
     if (mongo.isConnected) {
       console.log(`  Connection ......... ${status(true)} database: ${mongo.dbName}`);
+
+      const localCounts = {
+        articles: db.get('articles').length,
+        revisions: db.get('revisions').length,
+        categories: db.get('categories').length,
+        tags: db.get('tags').length,
+        authors: db.get('authors').length,
+        media: db.get('media').length,
+        subscribers: db.get('subscribers').length,
+        emailCampaigns: db.get('emailCampaigns').length,
+        leads: db.get('leads').length,
+        activityLogs: db.get('activityLogs').length,
+        redirects: db.get('redirects').length,
+        settings: db.get('settings') ? 1 : 0,
+        admin: db.get('admin') ? 1 : 0,
+        analyticsEvents: db.get('analyticsEvents').length,
+      };
+      const syncCheck = await verifyMongoSync(localCounts);
+
+      console.log(`  Sync status ........ ${syncCheck.inSync ? status(true) + ' all collections match' : status(false)}`);
+      if (!syncCheck.inSync) {
+        syncCheck.mismatches.slice(0, 5).forEach((m) => console.log(`    ↳ ${m}`));
+        if (syncCheck.mismatches.length > 5) {
+          console.log(`    ↳ ... and ${syncCheck.mismatches.length - 5} more`);
+        }
+      }
+
+      console.log('  Collection counts .. local → mongo');
+      const keys = ['articles', 'subscribers', 'leads', 'categories', 'authors'] as const;
+      for (const k of keys) {
+        const local = localCounts[k];
+        const remote = syncCheck.mongoCounts[k] ?? 0;
+        const match = local === remote ? '✓' : '✗';
+        console.log(`    ${k.padEnd(14)} ${String(local).padStart(4)} → ${String(remote).padStart(4)} ${match}`);
+      }
     } else {
       console.log(`  Connection ......... ${status(false)} ${mongo.uriConfigured ? 'could not connect' : 'MONGODB_URI not set'}`);
     }
@@ -139,10 +174,45 @@ export async function runStartupDiagnostics(host: string, port: number): Promise
   console.log(line + '\n');
 }
 
-export function getHealthStatus() {
+export async function getHealthStatus() {
   const dataDir = path.join(process.cwd(), 'data');
   const dbFile = path.join(dataDir, 'database.json');
   const emailSummary = getEmailConfigSummary();
+
+  const localCounts = {
+    articles: db.get('articles').length,
+    subscribers: db.get('subscribers').filter((s) => s.status === 'active').length,
+    leads: db.get('leads').length,
+  };
+
+  let mongo: { connected: boolean; inSync?: boolean; counts?: Record<string, number> } = { connected: false };
+  try {
+    const mongoStatus = await checkMongoStatus();
+    mongo.connected = mongoStatus.isConnected;
+    if (mongoStatus.isConnected) {
+      const fullLocal = {
+        articles: db.get('articles').length,
+        revisions: db.get('revisions').length,
+        categories: db.get('categories').length,
+        tags: db.get('tags').length,
+        authors: db.get('authors').length,
+        media: db.get('media').length,
+        subscribers: db.get('subscribers').length,
+        emailCampaigns: db.get('emailCampaigns').length,
+        leads: db.get('leads').length,
+        activityLogs: db.get('activityLogs').length,
+        redirects: db.get('redirects').length,
+        settings: db.get('settings') ? 1 : 0,
+        admin: db.get('admin') ? 1 : 0,
+        analyticsEvents: db.get('analyticsEvents').length,
+      };
+      const syncCheck = await verifyMongoSync(fullLocal);
+      mongo.inSync = syncCheck.inSync;
+      mongo.counts = syncCheck.mongoCounts;
+    }
+  } catch {
+    // ignore
+  }
 
   return {
     status: 'ok',
@@ -152,10 +222,9 @@ export function getHealthStatus() {
     database: {
       file: dbFile,
       exists: fs.existsSync(dbFile),
-      articles: db.get('articles').length,
-      subscribers: db.get('subscribers').filter((s) => s.status === 'active').length,
-      leads: db.get('leads').length,
+      ...localCounts,
     },
+    mongodb: mongo,
     email: {
       ...emailSummary,
       brevoApiKeySet: !!(process.env.BREVO_API_KEY?.trim()),

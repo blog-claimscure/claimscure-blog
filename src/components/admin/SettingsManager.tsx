@@ -229,10 +229,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="site-name" className="block text-xs font-bold text-slate-700 mb-1">
                 Site Name
               </label>
               <input
+                id="site-name"
                 type="text"
                 value={formData.siteName}
                 onChange={(e) => setFormData({ ...formData, siteName: e.target.value })}
@@ -241,10 +242,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="site-tagline" className="block text-xs font-bold text-slate-700 mb-1">
                 Tagline
               </label>
               <input
+                id="site-tagline"
                 type="text"
                 value={formData.siteTagline}
                 onChange={(e) => setFormData({ ...formData, siteTagline: e.target.value })}
@@ -255,10 +257,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="contact-phone" className="block text-xs font-bold text-slate-700 mb-1">
                 Contact Phone Number
               </label>
               <input
+                id="contact-phone"
                 type="text"
                 value={formData.contactPhone}
                 onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
@@ -267,10 +270,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="contact-email" className="block text-xs font-bold text-slate-700 mb-1">
                 Contact Email
               </label>
               <input
+                id="contact-email"
                 type="email"
                 value={formData.contactEmail}
                 onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
@@ -302,10 +306,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
 
           <form onSubmit={handleChangePassword} className="space-y-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="current-password" className="block text-xs font-bold text-slate-700 mb-1">
                 Current Password
               </label>
               <input
+                id="current-password"
                 type="password"
                 required
                 value={oldPassword}
@@ -315,10 +320,11 @@ export const SettingsManager: React.FC<SettingsManagerProps> = ({ settings, onRe
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label htmlFor="new-password" className="block text-xs font-bold text-slate-700 mb-1">
                 New Password (Min 8 characters)
               </label>
               <input
+                id="new-password"
                 type="password"
                 required
                 value={newPassword}

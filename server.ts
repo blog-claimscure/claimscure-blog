@@ -22,7 +22,14 @@ import {
   uploadToCloudinaryService,
   deleteFromCloudinaryService,
 } from './src/server/cloudinary';
-import { checkMongoStatus, syncCollectionToMongo, autoSyncMongoCollection } from './src/server/mongodb';
+import {
+  checkMongoStatus,
+  hydrateFromMongo,
+  syncAllCollectionsToMongo,
+  verifyMongoSync,
+  getMongoCollectionCounts,
+  SYNCABLE_COLLECTIONS,
+} from './src/server/mongodb';
 import { parseGoogleDocContent, getGoogleServicesStatus } from './src/server/googleIntegrations';
 import {
   sendWelcomeEmail,
@@ -60,6 +67,12 @@ async function startServer() {
   const HOST = process.env.HOST || '0.0.0.0';
 
   app.set('trust proxy', 1);
+
+  // Hydrate local JSON from MongoDB Atlas on startup (keeps Render redeploys in sync)
+  const hydration = await hydrateFromMongo(db);
+  if (hydration.hydrated) {
+    console.log('[MongoDB] Startup hydration complete');
+  }
 
   app.use(express.json({ limit: '20mb' }));
   app.use(express.urlencoded({ extended: true, limit: '20mb' }));
@@ -372,7 +385,6 @@ async function startServer() {
     };
 
     db.update('articles', (arts) => [newArticle, ...arts]);
-    autoSyncMongoCollection('articles', db.get('articles'));
 
     // Initial revision snapshot
     const revision: ArticleRevision = {
@@ -448,7 +460,6 @@ async function startServer() {
     };
 
     db.update('articles', (arts) => arts.map((a) => (a.id === id ? updatedArticle : a)));
-    autoSyncMongoCollection('articles', db.get('articles'));
 
     // Save revision snapshot
     const revision: ArticleRevision = {
@@ -545,7 +556,6 @@ async function startServer() {
     const adminEmail = (req as any).adminEmail;
 
     db.update('articles', (arts) => arts.filter((a) => a.id !== id));
-    autoSyncMongoCollection('articles', db.get('articles'));
     logActivity('DELETE_ARTICLE', `Deleted article ID: ${id}`, adminEmail);
     res.json({ success: true, message: 'Article deleted.' });
   });
@@ -951,7 +961,6 @@ async function startServer() {
     };
 
     db.update('subscribers', (subs) => [newSub, ...subs]);
-    autoSyncMongoCollection('subscribers', db.get('subscribers'));
 
     db.update('analyticsEvents', (evts) => [
       {
@@ -1135,7 +1144,6 @@ async function startServer() {
     };
 
     db.update('leads', (leads) => [lead, ...leads]);
-    autoSyncMongoCollection('leads', db.get('leads'));
 
     // Track conversion event
     db.update('analyticsEvents', (evts) => [
@@ -1323,17 +1331,35 @@ async function startServer() {
   // ----------------------------------------------------
   app.get('/api/system/database-status', requireAdminAuth, async (req, res) => {
     const mongoStatus = await checkMongoStatus();
+    const mongoCounts = mongoStatus.isConnected ? await getMongoCollectionCounts() : {};
+    const localCounts = {
+      articles: db.get('articles').length,
+      revisions: db.get('revisions').length,
+      categories: db.get('categories').length,
+      tags: db.get('tags').length,
+      authors: db.get('authors').length,
+      media: db.get('media').length,
+      subscribers: db.get('subscribers').length,
+      emailCampaigns: db.get('emailCampaigns').length,
+      leads: db.get('leads').length,
+      activityLogs: db.get('activityLogs').length,
+      redirects: db.get('redirects').length,
+      settings: db.get('settings') ? 1 : 0,
+      admin: db.get('admin') ? 1 : 0,
+      analyticsEvents: db.get('analyticsEvents').length,
+    };
+    const syncCheck = mongoStatus.isConnected
+      ? await verifyMongoSync(localCounts)
+      : { inSync: false, mongoCounts: {}, mismatches: ['MongoDB not connected'] };
+
     res.json({
-      primaryDatabase: mongoStatus.isConnected ? 'MongoDB Atlas' : 'Local JSON / Server Storage',
+      primaryDatabase: mongoStatus.isConnected ? 'MongoDB Atlas (synced with local JSON)' : 'Local JSON / Server Storage',
       mongoStatus,
-      collections: {
-        articles: db.get('articles').length,
-        categories: db.get('categories').length,
-        authors: db.get('authors').length,
-        subscribers: db.get('subscribers').length,
-        leads: db.get('leads').length,
-        media: db.get('media').length,
-      },
+      inSync: syncCheck.inSync,
+      mismatches: syncCheck.mismatches,
+      localCounts,
+      mongoCounts: syncCheck.mongoCounts,
+      syncableCollections: SYNCABLE_COLLECTIONS,
     });
   });
 
@@ -1372,7 +1398,6 @@ async function startServer() {
   });
 
   app.post('/api/system/mongodb-sync', requireAdminAuth, async (req, res) => {
-    const fullDb = db.getFullDb();
     const mongoStatus = await checkMongoStatus();
 
     if (!mongoStatus.isConnected) {
@@ -1382,18 +1407,41 @@ async function startServer() {
       return;
     }
 
-    let successCount = 0;
-    const collectionsToSync = ['articles', 'revisions', 'categories', 'tags', 'authors', 'media', 'subscribers', 'emailCampaigns', 'leads', 'activityLogs', 'redirects'];
+    const result = await syncAllCollectionsToMongo((key) => {
+      if (key === 'settings') return db.get('settings');
+      return db.get(key as any);
+    });
 
-    for (const key of collectionsToSync) {
-      const ok = await syncCollectionToMongo(key, (fullDb as any)[key] || []);
-      if (ok) successCount++;
-    }
+    logActivity(
+      'SYNC_MONGODB_ATLAS',
+      `Synchronized ${result.successCount}/${result.total} collections to MongoDB Atlas`,
+      (req as any).adminEmail
+    );
 
-    logActivity('SYNC_MONGODB_ATLAS', `Synchronized ${successCount} collections to MongoDB Atlas`, (req as any).adminEmail);
     res.json({
       success: true,
-      message: `Successfully synchronized ${successCount} collections to MongoDB Atlas database (${mongoStatus.dbName}).`,
+      message: `Successfully synchronized ${result.successCount}/${result.total} collections to MongoDB Atlas (${mongoStatus.dbName}).`,
+      details: result.details,
+    });
+  });
+
+  app.post('/api/system/mongodb-hydrate', requireAdminAuth, async (req, res) => {
+    const mongoStatus = await checkMongoStatus();
+    if (!mongoStatus.isConnected) {
+      res.status(400).json({ error: 'MongoDB Atlas is not connected.' });
+      return;
+    }
+
+    const hydration = await hydrateFromMongo(db);
+    logActivity('HYDRATE_MONGODB', 'Loaded data from MongoDB Atlas into local database', (req as any).adminEmail);
+
+    res.json({
+      success: true,
+      hydrated: hydration.hydrated,
+      collections: hydration.collections,
+      message: hydration.hydrated
+        ? 'Local database updated from MongoDB Atlas.'
+        : 'Local database already up to date with MongoDB Atlas.',
     });
   });
 

@@ -16,6 +16,12 @@ import {
   UrlRedirect,
   AnalyticsEvent,
 } from '../types';
+import {
+  SYNCABLE_COLLECTIONS,
+  SyncableCollection,
+  syncCollectionToMongo,
+  syncAllCollectionsToMongo,
+} from './mongodb';
 
 interface DatabaseSchema {
   admin: {
@@ -1022,6 +1028,11 @@ function getInitialDb(): DatabaseSchema {
 
 class DatabaseService {
   private cache: DatabaseSchema | null = null;
+  private _skipMongoSync: boolean = false;
+
+  public setSkipMongoSync(skip: boolean): void {
+    this._skipMongoSync = skip;
+  }
 
   private load(): DatabaseSchema {
     if (this.cache) return this.cache;
@@ -1094,10 +1105,11 @@ class DatabaseService {
     return db[key];
   }
 
-  public set<K extends keyof DatabaseSchema>(key: K, value: DatabaseSchema[K]): void {
+  public async set<K extends keyof DatabaseSchema>(key: K, value: DatabaseSchema[K]): Promise<void> {
     const db = this.load();
     db[key] = value;
     this.save();
+    this.triggerMongoSync(key as string, value);
   }
 
   public update<K extends keyof DatabaseSchema>(
@@ -1107,7 +1119,26 @@ class DatabaseService {
     const db = this.load();
     db[key] = updater(db[key]);
     this.save();
+    this.triggerMongoSync(key as string, db[key]);
     return db[key];
+  }
+
+  private triggerMongoSync(key: string, value: unknown): void {
+    if (this._skipMongoSync) return;
+
+    const syncable = [
+      'articles', 'revisions', 'categories', 'tags', 'authors', 'media',
+      'subscribers', 'emailCampaigns', 'leads', 'activityLogs', 'redirects', 'settings',
+      'analyticsEvents', 'admin',
+    ];
+    if (!syncable.includes(key)) return;
+
+    import('./mongodb').then(({ autoSyncMongoCollection }) => {
+      const payload = key === 'settings' || key === 'admin' ? [value] : (value as unknown[]);
+      autoSyncMongoCollection(key, payload);
+    }).catch(() => {
+      // Mongo sync is best-effort
+    });
   }
 
   public getFullDb(): DatabaseSchema {
@@ -1117,6 +1148,12 @@ class DatabaseService {
   public restoreFullDb(newDb: DatabaseSchema): void {
     this.cache = newDb;
     this.save();
+    import('./mongodb').then(({ syncAllCollectionsToMongo }) => {
+      syncAllCollectionsToMongo((key) => {
+        if (key === 'settings') return this.cache?.settings;
+        return (this.cache as any)?.[key];
+      }).catch(() => {});
+    }).catch(() => {});
   }
 }
 
