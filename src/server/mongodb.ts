@@ -121,12 +121,29 @@ export async function syncCollectionToMongo<T>(collectionName: string, items: T[
       return doc;
     });
 
-    await collection.deleteMany({});
-    if (payload.length > 0) {
-      await collection.insertMany(payload);
+    if (payload.length === 0) {
+      const existing = await collection.estimatedDocumentCount();
+      if (existing === 0) {
+        console.log(`[MongoDB] Synced ${collectionName} → 0 documents (no-op, both empty)`);
+        return true;
+      }
+      console.warn(
+        `[MongoDB] Skipped empty sync for ${collectionName}: local has 0 but Atlas has ${existing}. Refusing to wipe Atlas data.`
+      );
+      return true;
     }
 
-    console.log(`[MongoDB] Synced ${collectionName} → ${payload.length} documents`);
+    await collection.deleteMany({});
+    const insertResult = await collection.insertMany(payload);
+    const inserted = insertResult.insertedCount ?? payload.length;
+
+    if (inserted !== payload.length) {
+      console.warn(
+        `[MongoDB] ${collectionName}: expected ${payload.length} docs inserted but Atlas got ${inserted}`
+      );
+    }
+
+    console.log(`[MongoDB] Synced ${collectionName} → ${inserted} documents`);
     return true;
   } catch (err) {
     console.error(`[MongoDB] Failed to sync ${collectionName}:`, err);
