@@ -132,25 +132,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
           <p className="text-[11px] text-indigo-600 font-medium">Audit requests</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-            <span>Total Views</span>
-            <Eye className="w-4 h-4 text-amber-600" />
-          </div>
-          <p className="text-2xl sm:text-3xl font-black text-slate-900">
-            {stats.totalViews || 0}
-          </p>
-          <p className="text-[11px] text-slate-500">All-time readers</p>
-        </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-            <span>Clean Claim Yield</span>
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
-          </div>
-          <p className="text-2xl sm:text-3xl font-black text-slate-900">97.8%</p>
-          <p className="text-[11px] text-emerald-600 font-medium">RCM Benchmark</p>
-        </div>
       </div>
 
       {/* Top Performing Articles Table */}
