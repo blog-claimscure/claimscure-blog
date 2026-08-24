@@ -90,7 +90,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
             <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
           </div>
           <p className="text-2xl sm:text-3xl font-black text-slate-900">
-            {stats.liveVisitors || 6}
+            {stats.liveVisitors || 0}
           </p>
           <p className="text-[11px] text-emerald-600 font-medium">Real-time online</p>
         </div>
