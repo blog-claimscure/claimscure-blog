@@ -152,7 +152,6 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                 <th className="py-3 px-4">Publication Title</th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Pageviews</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
