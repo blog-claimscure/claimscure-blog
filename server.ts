@@ -74,6 +74,47 @@ async function startServer() {
     console.log('[MongoDB] Startup hydration complete');
   }
 
+  // Bidirectional reconcile on startup: if LOCAL JSON has docs that Atlas doesn't
+  // (e.g. git-seeded articles/authors where mongo was behind), push them to Atlas now.
+  // Safe because hydration already loaded mongo->local wherever mongo was ahead,
+  // so pushing local->mongo after hydration makes both sides converge.
+  try {
+    const mongo = await import('./src/server/mongodb');
+    const mongoStatus = await mongo.checkMongoStatus();
+    if (mongoStatus.isConnected) {
+      const mongoCounts = await mongo.getMongoCollectionCounts();
+      const mismatches: string[] = [];
+      for (const key of mongo.SYNCABLE_COLLECTIONS) {
+        const localVal = db.get(key as any);
+        const localCount =
+          key === 'settings' || key === 'admin'
+            ? localVal ? 1 : 0
+            : Array.isArray(localVal) ? localVal.length : 0;
+        const remoteCount = mongoCounts[key] ?? 0;
+        if (localCount !== remoteCount) {
+          mismatches.push(`${key} local=${localCount} mongo=${remoteCount}`);
+        }
+      }
+
+      if (mismatches.length > 0) {
+        console.log(`[MongoDB] Startup reconcile: ${mismatches.length} collection(s) out of sync — pushing local → Atlas`);
+        mismatches.forEach((m) => console.log(`  ↳ ${m}`));
+        const result = await mongo.syncAllCollectionsToMongo((key) => {
+          if (key === 'settings') return db.get('settings');
+          if (key === 'admin') return db.get('admin');
+          return db.get(key as any);
+        });
+        console.log(
+          `[MongoDB] Startup reconcile done: synced ${result.successCount}/${result.total} collections`
+        );
+      } else {
+        console.log('[MongoDB] Local and Atlas collections are fully in sync ✓');
+      }
+    }
+  } catch (err: any) {
+    console.warn('[MongoDB] Startup reconcile skipped:', err?.message || err);
+  }
+
   app.use(express.json({ limit: '20mb' }));
   app.use(express.urlencoded({ extended: true, limit: '20mb' }));
   app.use(cookieParser());
