@@ -84,16 +84,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
 
       {/* Metrics Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-            <span>Live Visitors</span>
-            <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
-          </div>
-          <p className="text-2xl sm:text-3xl font-black text-slate-900">
-            {stats.liveVisitors || 0}
-          </p>
-          <p className="text-[11px] text-emerald-600 font-medium">Real-time online</p>
-        </div>
+        
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-xs font-bold text-slate-500">
