@@ -7,14 +7,13 @@ import {
   Image as ImageIcon,
   Users,
   CheckCircle2,
-  BarChart3,
   Settings,
   LogOut,
   Shield,
   Plus,
   ArrowLeft,
 } from 'lucide-react';
-import { Article, Category, Author, Tag, MediaItem, Subscriber, EmailCampaign, Lead, AnalyticsDashboard, SiteSettings } from '../../types';
+import { Article, Category, Author, Tag, MediaItem, Subscriber, EmailCampaign, Lead, SiteSettings } from '../../types';
 import { api, clearAdminToken } from '../../lib/api';
 
 import { OverviewPanel } from './OverviewPanel';
@@ -24,7 +23,6 @@ import { AuthorsManager } from './AuthorsManager';
 import { MediaManager } from './MediaManager';
 import { SubscribersManager } from './SubscribersManager';
 import { LeadsManager } from './LeadsManager';
-import { AnalyticsManager } from './AnalyticsManager';
 import { SettingsManager } from './SettingsManager';
 
 interface AdminLayoutProps {
@@ -41,7 +39,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
     | 'media'
     | 'subscribers'
     | 'leads'
-    | 'analytics'
     | 'settings'
   >('overview');
 
@@ -53,7 +50,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [analytics, setAnalytics] = useState<AnalyticsDashboard | null>(null);
   const [settings, setSettings] = useState<SiteSettings | null>(null);
 
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
@@ -67,7 +63,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
   const loadAllAdminData = async () => {
     setLoading(true);
     try {
-      const [artRes, catRes, authRes, tagRes, medRes, subRes, campRes, leadRes, anaRes, setRes] =
+      const [artRes, catRes, authRes, tagRes, medRes, subRes, campRes, leadRes, setRes] =
         await Promise.all([
           api.getArticles({ limit: 100 }),
           api.getCategories(),
@@ -77,7 +73,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
           api.getSubscribers(),
           api.getCampaigns(),
           api.getLeads(),
-          api.getAnalyticsDashboard(),
           api.getSiteSettings(),
         ]);
 
@@ -89,7 +84,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
       setSubscribers(Array.isArray(subRes) ? subRes : (subRes as any)?.subscribers || []);
       setCampaigns(Array.isArray(campRes) ? campRes : (campRes as any)?.campaigns || []);
       setLeads(Array.isArray(leadRes) ? leadRes : (leadRes as any)?.leads || []);
-      setAnalytics(anaRes || null);
       setSettings(setRes?.settings || setRes || null);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
@@ -272,21 +266,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
 
             <button
               onClick={() => {
-                setActiveTab('analytics');
-                setIsComposing(false);
-              }}
-              className={`px-3 py-2 rounded-xl transition-all whitespace-nowrap flex items-center space-x-1.5 cursor-pointer ${
-                activeTab === 'analytics'
-                  ? 'bg-[#0B5FA5] text-white shadow'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>Analytics</span>
-            </button>
-
-            <button
-              onClick={() => {
                 setActiveTab('settings');
                 setIsComposing(false);
               }}
@@ -463,8 +442,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onLogout, onGoToPublic
             {activeTab === 'leads' && (
               <LeadsManager leads={leads} onRefresh={loadAllAdminData} />
             )}
-
-            {activeTab === 'analytics' && <AnalyticsManager analytics={analytics} />}
 
             {activeTab === 'settings' && settings && (
               <SettingsManager settings={settings} onRefresh={loadAllAdminData} />
