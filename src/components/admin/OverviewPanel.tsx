@@ -2,9 +2,7 @@ import React from 'react';
 import {
   FileText,
   Users,
-  Eye,
   CheckCircle2,
-  Clock,
   TrendingUp,
   Plus,
   Send,
@@ -85,7 +83,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
       </div>
 
       {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-xs font-bold text-slate-500">
             <span>Live Visitors</span>
@@ -131,8 +129,6 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
           </p>
           <p className="text-[11px] text-indigo-600 font-medium">Audit requests</p>
         </div>
-
-
       </div>
 
       {/* Top Performing Articles Table */}
@@ -142,7 +138,6 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
             <TrendingUp className="w-5 h-5 text-teal-600 mr-2" />
             Top Performing Publications
           </h3>
-          <span className="text-xs text-slate-500">Ranked by total reader pageviews</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -175,9 +170,6 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({
                     >
                       {art.status}
                     </span>
-                  </td>
-                  <td className="py-3.5 px-4 font-extrabold text-slate-900">
-                    {art.views || 0}
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <button
